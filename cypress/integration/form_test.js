@@ -12,6 +12,8 @@ describe('Quotes App', () => {
     const termsOfServiceInput = () => cy.get(`input[name=termsOfService]`)
     const submitBtn = () => cy.get(`button[id="submitBtn"]`)
 
+    const fileContent = []
+
     it('sanity check to make sure that tests work', () => {
         //keyword 'it' is a test
         //"expect" is an assertion
@@ -61,16 +63,18 @@ describe('Quotes App', () => {
       })
    })
 
-   describe(`user can submit form data`, () => {
+   describe(`user can submit form data when all fields are complete`, () => {
     it('the submit button enables when all inputs are filled out', () => {
         firstNameInput().type('Norm')
         lastNameInput().type('Jeune')
         emailInput().type('norm@norm.com')
         avatarInput()
+            cy.fixture('testPicture.png').then(fileContent => {
             cy.get('[type="file"]').attachFile({
                 fileContent: fileContent.toString(),
                 fileName: 'testPicture.png',
                 mimeType: 'image/png'
+            })
             })
         termsOfServiceInput()
             cy.get('[type="checkbox"]').check()
