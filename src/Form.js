@@ -9,6 +9,17 @@ export default function UserForm(props) {
         errors,
     } = props
 
+    const onSubmit = evt => {
+        evt.preventDefault()
+        submit()
+      }
+
+    const onChange = evt => {
+        const { name, value, checked, type } = evt.target
+        const valueToUse = type === 'checkbox' ? checked : value;
+        change( name, valueToUse);
+      }
+
 
 return (
     <form className='form container' onSubmit={onSubmit}>
@@ -18,9 +29,10 @@ return (
             <button disabled={disabled}>submit</button>
 
             <div className='errors'>
-                <div>{errors.name}</div>
+                <div>{errors.first_name}</div>
+                <div>{errors.last_name}</div>
                 <div>{errors.email}</div>
-                <div>{errors.password}</div>
+                <div>{errors.avatar}</div>
                 <div>{errors.termsOfService}</div>
             </div>
         </div>
@@ -28,11 +40,20 @@ return (
         <div className='form-group inputs'>
             <h4>New Associate Information</h4>
 
-            <label>Name&nbsp;
+            <label>First Name
               <input
-                value={values.name}
+                value={values.first_name}
                 onChange={onChange}
-                name='name'
+                name='first_name'
+                type='text'
+                />
+            </label>
+
+            <label>Last Name&nbsp;
+              <input
+                value={values.last_name}
+                onChange={onChange}
+                name='last_name'
                 type='text'
                 />
             </label>
@@ -46,7 +67,7 @@ return (
                />
            </label>
 
-           <label>Role
+           {/* <label>Role
               <select
                 onChange={onChange}
                 value={values.role}
@@ -58,14 +79,14 @@ return (
                 <option value='instructor'>Analyst III</option>
                 <option value='tl'>Team Lead</option>
               </select>
-           </label>
+           </label> */}
 
-           <label>Password
+           <label>Avatar
               <input
-                value={values.password}
+                value={values.avatar}
                 onChange={onChange}
-                name='Password'
-                type='text'
+                name='avatar'
+                type='file'
               />
             </label>
 

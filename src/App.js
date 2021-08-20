@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import UserForm from './Form';
 import axios from 'axios';
 import * as yup from 'yup';
 import schema from './validation/formSchema';
-import { ValidationError } from 'yup';
-
-{/*///////Initial States/////// */}
+import User from './User';
 
 const initialFormValues = {
-  name: '',
+  first_name: '',
+  last_name: '',
   email: '',
-  role: '',
-  password: '',
+  avatar: '',
   termsOfService: false,
 }
 const initialFormErrors = {
-  name: '',
+  first_name: '',
+  last_name: '',
   email: '',
-  role: '',
-  password: '',
+  avatar: '',
+  initialFormErrors: '',
 }
 
-const initialUser = []
+const initialUsers = []
 const initialDisabled = true
 
 export default function App() {
@@ -37,17 +35,25 @@ export default function App() {
     const getUsers = () => {
       axios.get(`https://reqres.in/api/users`)
       .then(res => {
-        setUsers(res.data);
+        console.log(res)
+        setUsers(res.data.data);
       }).catch(err => console.error(err))
     }
 
     const postNewUser = newUser => {
       axios.post(`https://reqres.in/api/users`, newUser)
           .then(res => {
-            setUsers([res.data, ...users]);
+            setUsers([...users, res.data]);
         }).catch(err => console.error(err));
   
       setFormValues(initialFormValues);
+    }
+
+    const validate = (name, value) => {
+      yup.reach(schema, name)
+        .validate(value)
+        .then(() => setFormErrors({ ...formErrors, [name]: '' }))
+        .catch(err => setFormErrors({ ...formErrors, [name]: err.errors[0]}))
     }
 
     const inputChange = (name, value) => {
@@ -62,11 +68,11 @@ export default function App() {
 
 
       const newUser = {
-        name: formValues.name.trim(),
+        first_name: formValues.name.trim(),
+        last_name: formValues.name.trim(),
         email: formValues.email.trim(),
-        role: formValues.role.trim(),
-        password: formValues.password.trim(),
-        termsOfService: []
+        avatar: formValues.avatar.trim(),
+        termsOfService: true
       }
 
       postNewUser(newUser);
@@ -92,6 +98,14 @@ export default function App() {
         disabled={disabled}
         errors={formErrors}
       />
+
+      {
+        users.map( user => {
+          return (
+            <User key={user.id} details={user} />
+          )
+        })
+      }
       
     </div>
     );
